@@ -1,25 +1,23 @@
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
+import { getAuth } from "firebase/auth";
 import { Container, Col, Nav } from "react-bootstrap";
 import { useNavigate, Outlet } from "react-router-dom";
-import useLocalStorage from "use-local-storage";
+import { AuthContext } from "../components/AuthProvider";
 import Header from "../components/Header";
 import CardItem from "../components/CardItem";
 
 
 export default function LandingPage() {
-    const [authToken, setAuthToken] = useLocalStorage("authToken", "");
+    const auth = getAuth();
     const navigate = useNavigate();
+    const { currentUser } = useContext(AuthContext);
 
-    // Check for authToken immediately upon component mount and whenever authToken changes
-    useEffect(() => {
-        if (!authToken) {
-            navigate("/login"); // Redirect to login if token is not present
-        }
-    }, [authToken, navigate]);
-
+    if (!currentUser) {
+        navigate("/login");
+    }
 
     const handleLogout = () => {
-        setAuthToken(""); // Clear token from localStorage
+        auth.signOut();
     };
 
     return (
@@ -38,7 +36,7 @@ export default function LandingPage() {
                 </Nav>
                 <Outlet />
             </Container>
-            <Col sm={11}>
+            <Col sm={12}>
                 <Header />
                 <CardItem />
 

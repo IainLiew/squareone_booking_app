@@ -1,28 +1,28 @@
 import { useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import { useDispatch } from "react-redux";
-import { savePost } from "../feature/posts/postsSlice";
+import { saveBooking } from "../feature/posts/bookingsSlice";
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 export default function NewBookingModal({ show, handleclose }) {
 
-    const [title, setTitle] = useState("");
+    const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
     const [service, setService] = useState("");
-    const [startDateTime, setStartDateTime] = useState(null);
+    const [datetime, setDateTime] = useState(null);
     const dispatch = useDispatch();
 
     const handleSave = () => {
-        dispatch(savePost(title, email, phone, service, startDateTime));
+        dispatch(saveBooking(name, email, phone, service, datetime));
         handleclose();
-        setTitle("");
+        setName("");
         setEmail("");
         setPhone("");
         setService("");
-        setStartDateTime("");
+        setDateTime("");
     };
 
     return (
@@ -33,7 +33,7 @@ export default function NewBookingModal({ show, handleclose }) {
                     <Form>
                         <Form.Group className="mb-3" controlId="bookingformname">
                             <Form.Label>Name</Form.Label>
-                            <Form.Control type="text" placeholder="Enter name" value={title} onChange={(e) => setTitle(e.target.value)} />
+                            <Form.Control type="text" placeholder="Enter name" value={name} onChange={(e) => setName(e.target.value)} />
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="email">
                             <Form.Label>Email</Form.Label>
@@ -55,8 +55,8 @@ export default function NewBookingModal({ show, handleclose }) {
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <DateTimePicker
                                     label="Date/Time"
-                                    value={startDateTime}
-                                    onChange={(date) => setStartDateTime(date)}
+                                    value={datetime}
+                                    onChange={(date) => setDateTime(date)}
                                 />
                             </LocalizationProvider>
                         </Form.Group>
