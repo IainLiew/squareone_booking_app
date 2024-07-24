@@ -1,23 +1,31 @@
-import { useEffect, useContext } from "react";
-import { getAuth } from "firebase/auth";
+import { useEffect } from "react";
+//import { getAuth } from "firebase/auth";
 import { Container, Col, Nav } from "react-bootstrap";
 import { useNavigate, Outlet } from "react-router-dom";
-import { AuthContext } from "../components/AuthProvider";
+//import { AuthContext } from "../components/AuthProvider";
 import Header from "../components/Header";
 import CardItem from "../components/CardItem";
+import useLocalStorage from "use-local-storage";
 
 
 export default function LandingPage() {
-    const auth = getAuth();
+    const [authToken, setAuthToken] = useLocalStorage("authToken", "");
     const navigate = useNavigate();
-    const { currentUser } = useContext(AuthContext);
 
-    if (!currentUser) {
-        navigate("/login");
-    }
+    useEffect(() => {
+        if (!authToken) {
+            navigate("/login");
+        }
+    }, [authToken, navigate]);
+    //const { currentUser } = useContext(AuthContext);
+
+    // if (!currentUser) {
+    //     navigate("/login");
+    // }
 
     const handleLogout = () => {
-        auth.signOut();
+        setAuthToken("");
+        //auth.signOut();
     };
 
     return (

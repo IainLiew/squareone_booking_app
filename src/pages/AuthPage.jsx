@@ -1,34 +1,40 @@
 import { Button, Col, Image, Row, Modal, Form } from "react-bootstrap";
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import squareone from "../components/images/squareone.png"
-import { AuthContext } from "../components/AuthProvider";
-import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+//import { AuthContext } from "../components/AuthProvider";
+import useLocalStorage from "use-local-storage";
+//import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 
 export default function AuthPage() {
+    const url = "https://c2dd28e3-6025-4f9a-bb9b-6e3e5ba576fd-00-knxvzmwk6636.worf.replit.dev";
+
     const [modalShow, setModalShow] = useState(null);
     const handleShowSignUp = () => setModalShow("SignUp");
     const handleShowLogin = () => setModalShow("Login");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [authToken, setAuthToken] = useLocalStorage("authToken", "");
     const navigate = useNavigate();
-    const auth = getAuth();
-    const { currentUser } = useContext(AuthContext);
+    //const auth = getAuth();
+    // const { currentUser } = useContext(AuthContext);
 
     useEffect(() => {
-        if (currentUser) navigate("/landing");
-    }, [currentUser, navigate]);
+        if (authToken) navigate("/landing");
+    }, [authToken, navigate]);
 
     const handleSignup = async (e) => {
         e.preventDefault();
         try {
-            const res = await createUserWithEmailAndPassword(
-                auth,
-                username,
-                password,
-            );
-            console.log(res.user);
+            const res = await axios.post(`${url}/signup`, { username, password });
+            // const res = await createUserWithEmailAndPassword(
+            //     auth,
+            //     username,
+            //     password,
+            // );
+            console.log(res.data);
         } catch (error) {
             console.error(error);
         }
@@ -37,21 +43,26 @@ export default function AuthPage() {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            await signInWithEmailAndPassword(auth, username, password);
+            const res = await axios.post(`${url}/login`, { username, password });
+            if (res.data && res.data.auth === true && res.data.token) {
+                setAuthToken(res.data.token);
+                console.log("Login was successful, token saved");
+            }
+            //await signInWithEmailAndPassword(auth, username, password);
         } catch (error) {
             console.error(error);
         }
     };
 
-    const provider = new GoogleAuthProvider();
-    const handleGoogleLogin = async (e) => {
-        e.preventDefault();
-        try {
-            await signInWithPopup(auth, provider);
-        } catch (error) {
-            console.error(error);
-        }
-    }
+    //const provider = new GoogleAuthProvider();
+    //const handleGoogleLogin = async (e) => {
+    //     e.preventDefault();
+    //     try {
+    //         await signInWithPopup(auth, provider);
+    //     } catch (error) {
+    //         console.error(error);
+    //     }
+    // }
 
     const handleClose = () => setModalShow(null);
 
@@ -67,7 +78,7 @@ export default function AuthPage() {
                 <h2 className="my-5" style={{ fontSize: 31 }}>Welcome To SquareOne</h2>
 
                 <Col sm={5} className="d-grid gap-2">
-                    <Button className="rounded-pill" variant="outline-dark" onClick={handleGoogleLogin}>
+                    <Button className="rounded-pill" variant="outline-dark">
                         <i className="bi bi-google"> Sign up with Google</i>
                     </Button>
                     <p style={{ textAlign: "center" }}>or</p>

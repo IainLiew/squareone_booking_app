@@ -2,9 +2,7 @@ import { useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { saveBooking } from "../feature/posts/bookingsSlice";
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+
 
 export default function NewBookingModal({ show, handleclose }) {
 
@@ -12,17 +10,19 @@ export default function NewBookingModal({ show, handleclose }) {
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
     const [service, setService] = useState("");
-    const [datetime, setDateTime] = useState(null);
+    const [date, setDate] = useState("");
+    const [time, setTime] = useState("");
     const dispatch = useDispatch();
 
     const handleSave = () => {
-        dispatch(saveBooking(name, email, phone, service, datetime));
+        dispatch(saveBooking({ name, email, phone, service, date, time }));
         handleclose();
         setName("");
         setEmail("");
         setPhone("");
         setService("");
-        setDateTime("");
+        setDate("");
+        setTime("");
     };
 
     return (
@@ -51,14 +51,13 @@ export default function NewBookingModal({ show, handleclose }) {
                                 <option value="3">Multipurpose Court</option>
                             </Form.Select>
                         </Form.Group>
-                        <Form.Group className="mb-3" controlId="datepicker">
-                            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                <DateTimePicker
-                                    label="Date/Time"
-                                    value={datetime}
-                                    onChange={(date) => setDateTime(date)}
-                                />
-                            </LocalizationProvider>
+                        <Form.Group className="mb-3" controlId="datetime">
+                            <Form.Label>Date</Form.Label>
+                            <Form.Control placeholder="select date" type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+                            <Form.Label>Time</Form.Label>
+                            <Form.Control placeholder="select time" type="time" value={time} onChange={(e) => setTime(e.target.value)} >
+                            </Form.Control>
+
                         </Form.Group>
                     </Form>
                 </Modal.Body>
