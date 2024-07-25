@@ -46,9 +46,9 @@ export default function NewBookingModal({ show, handleclose }) {
                         <Form.Group className="mb-3" controlId="service">
                             <Form.Label>Service</Form.Label>
                             <Form.Select aria-label="Select" value={service} onChange={(e) => setService(e.target.value)}>
-                                <option value="1">Personal Coaching</option>
-                                <option value="2">Strength & Conditioning</option>
-                                <option value="3">Multipurpose Court</option>
+                                <option value="Personal Coaching">Personal Coaching</option>
+                                <option value="Strength & Conditioning">Strength & Conditioning</option>
+                                <option value="Multipurpose Court">Multipurpose Court</option>
                             </Form.Select>
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="datetime">
